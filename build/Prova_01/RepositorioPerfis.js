@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RepositorioPerfis = void 0;
 var RepositorioPerfis = /** @class */ (function () {
     function RepositorioPerfis() {
         this._perfis = [];
@@ -10,11 +11,24 @@ var RepositorioPerfis = /** @class */ (function () {
     RepositorioPerfis.prototype.consultar = function (id, nome, email) {
         for (var _i = 0, _a = this._perfis; _i < _a.length; _i++) {
             var perfil = _a[_i];
-            if (perfil.id == id || perfil.nome == nome || perfil.email == email) {
-                return perfil;
+            if (id) {
+                if (perfil.id == id) {
+                    return perfil;
+                }
+            }
+            if (nome) {
+                if (perfil.nome == nome) {
+                    return perfil;
+                }
+            }
+            if (email) {
+                if (perfil.email == email) {
+                    return perfil;
+                }
             }
         }
         return null;
     };
     return RepositorioPerfis;
 }());
+exports.RepositorioPerfis = RepositorioPerfis;

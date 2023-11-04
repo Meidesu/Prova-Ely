@@ -54,7 +54,9 @@ var PostagemAvancada = /** @class */ (function (_super) {
     //   return false;
     // }
     PostagemAvancada.prototype.decrementarVisualizacoes = function () {
-        this._visualizacoesRestantes--;
+        if (this._visualizacoesRestantes > 0) {
+            this._visualizacoesRestantes--;
+        }
     };
     return PostagemAvancada;
 }(Postagem_1.Postagem));

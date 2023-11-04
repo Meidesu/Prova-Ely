@@ -38,7 +38,10 @@ export class PostagemAvancada extends Postagem {
   // }
 
   public decrementarVisualizacoes(): void{ 
-    this._visualizacoesRestantes--;
+    if ( this._visualizacoesRestantes > 0){
+      this._visualizacoesRestantes--;
+    }
+
   }
 
 }

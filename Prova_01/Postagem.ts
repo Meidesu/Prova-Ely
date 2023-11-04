@@ -14,7 +14,7 @@ export class Postagem {
     this._curtidas = curtidas;
     this._descrurtidas = descrurtidas;
     this._data = data;
-    this._perfil = perfil;
+    this._perfil = perfil;  
   }
 
   get id(): number{
