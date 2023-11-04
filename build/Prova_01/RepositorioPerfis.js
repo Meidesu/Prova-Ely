@@ -8,6 +8,15 @@ var RepositorioPerfis = /** @class */ (function () {
     RepositorioPerfis.prototype.incluir = function (perfil) {
         this._perfis.push(perfil);
     };
+    RepositorioPerfis.prototype.existeNome = function (nome) {
+        for (var _i = 0, _a = this._perfis; _i < _a.length; _i++) {
+            var perfil = _a[_i];
+            if (perfil.nome == nome) {
+                return true;
+            }
+        }
+        return false;
+    };
     RepositorioPerfis.prototype.consultar = function (id, nome, email) {
         for (var _i = 0, _a = this._perfis; _i < _a.length; _i++) {
             var perfil = _a[_i];

@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedeSocial = void 0;
+var Perfil_1 = require("./Perfil");
 var PostagemAvancada_1 = require("./PostagemAvancada");
 var RepositorioPostagens_1 = require("./RepositorioPostagens");
 var RepositorioPerfis_1 = require("./RepositorioPerfis");
 var RedeSocial = /** @class */ (function () {
     function RedeSocial() {
-        this.repositorioPerfis = new RepositorioPerfis_1.RepositorioPerfis();
-        this.repositorioPostagens = new RepositorioPostagens_1.RepositorioPostagens();
+        this._repositorioPerfis = new RepositorioPerfis_1.RepositorioPerfis();
+        this._repositorioPostagens = new RepositorioPostagens_1.RepositorioPostagens();
         /**
         exibirPostagensPorHashtag(hashtag: string): PostagemAvancada[] {
         const postagens = this.consultarPostagens(0, '', hashtag, undefined);
@@ -28,16 +29,20 @@ var RedeSocial = /** @class */ (function () {
          *
          */
     }
+    RedeSocial.prototype.criarPerfil = function (id, nome, email) {
+        var novoPerfil = new Perfil_1.Perfil(id, nome, email);
+        this.incluirPerfil(novoPerfil);
+    };
     RedeSocial.prototype.incluirPerfil = function (perfil) {
         if (perfil.id && perfil.nome && perfil.email) {
-            this.repositorioPerfis.incluir(perfil);
+            this._repositorioPerfis.incluir(perfil);
         }
     };
     RedeSocial.prototype.consultarPerfil = function (id, nome, email) {
-        return this.repositorioPerfis.consultar(id, nome, email);
+        return this._repositorioPerfis.consultar(id, nome, email);
     };
     RedeSocial.prototype.incluirPostagem = function (postagem) {
-        if (!postagem.id || this.repositorioPostagens.existeId(postagem.id)) {
+        if (!postagem.id || this._repositorioPostagens.existeId(postagem.id)) {
             return;
         }
         if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
@@ -51,19 +56,19 @@ var RedeSocial = /** @class */ (function () {
         if (!postagem.perfil) {
             return;
         }
-        this.repositorioPostagens.incluir(postagem);
+        this._repositorioPostagens.incluir(postagem);
     };
     RedeSocial.prototype.consultarPostagens = function (id, texto, hashtag, perfil) {
-        return this.repositorioPostagens.consultar(id, texto, hashtag, perfil);
+        return this._repositorioPostagens.consultar(id, texto, hashtag, perfil);
     };
     RedeSocial.prototype.curtir = function (idPostagem) {
-        var postagem = this.repositorioPostagens.consultarId(idPostagem);
+        var postagem = this._repositorioPostagens.consultarId(idPostagem);
         if (postagem) {
             postagem.curtir();
         }
     };
     RedeSocial.prototype.descurtir = function (idPostagem) {
-        var postagem = this.repositorioPostagens.consultarId(idPostagem);
+        var postagem = this._repositorioPostagens.consultarId(idPostagem);
         if (postagem) {
             postagem.descurtir();
         }
@@ -77,10 +82,10 @@ var RedeSocial = /** @class */ (function () {
         }
     };
     RedeSocial.prototype.exibirPostagensPorPerfil = function (id) {
-        var perfil = this.repositorioPerfis.consultar(id);
+        var perfil = this._repositorioPerfis.consultar(id);
         var postagens = [];
         if (perfil) {
-            postagens = this.repositorioPostagens.consultarPorPerfil(perfil);
+            postagens = this._repositorioPostagens.consultarPorPerfil(perfil);
             postagens = postagens.filter(function (postagem) {
                 if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
                     return postagem.visualizacoesRestantes <= 0;
@@ -91,7 +96,7 @@ var RedeSocial = /** @class */ (function () {
         return postagens;
     };
     RedeSocial.prototype.exibirPostagensPorHashtag = function (hashtag) {
-        var postagens = this.repositorioPostagens.consultarPorHashtag(hashtag);
+        var postagens = this._repositorioPostagens.consultarPorHashtag(hashtag);
         if (postagens.length == 0) {
             return postagens; // Retorna um array vazio se não houver postagens com a hashtag
         }
@@ -100,6 +105,9 @@ var RedeSocial = /** @class */ (function () {
         }); // filtra as postagens que não possuem visualizações restantes
         this.decrementarVisualizacoes(postagens); // decrementa as visualizações das postagens
         return postagens; // Retorna o array com as postagens que possuem a hashtag
+    };
+    RedeSocial.prototype.existePerfil = function (nome) {
+        return this._repositorioPerfis.existeNome(nome);
     };
     return RedeSocial;
 }());
