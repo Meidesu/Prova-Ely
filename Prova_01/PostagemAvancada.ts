@@ -5,7 +5,7 @@ export class PostagemAvancada extends Postagem {
   private _hashtags: string[];
   private _visualizacoesRestantes: number;
 
-  constructor(id: number, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil, hashtags: string[], visualizacoesRestantes: number){
+  constructor(id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil, hashtags: string[], visualizacoesRestantes: number){
     super(id, texto, curtidas, descrurtidas, data, perfil);
     this._hashtags = hashtags;
     this._visualizacoesRestantes = visualizacoesRestantes;

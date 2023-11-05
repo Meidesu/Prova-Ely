@@ -7,23 +7,33 @@ export class RepositorioPerfis {
     this._perfis.push(perfil);
   }
 
-  public consultar(id?: number, nome?: string, email?: string): Perfil | null{ 
+  public existeNome(nome: string): boolean {
+    for ( let perfil of this._perfis ){
+      if ( perfil.nome == nome ){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public consultar(id?: string, nome?: string, email?: string): Perfil | null{ 
 
     for (let perfil of this._perfis){
       if ( id ){
-        if ( perfil.id == id){
+        if ( perfil.id == id ){
           return perfil;
         }
       }
 
       if ( nome ){
-        if ( perfil.nome == nome){
+        if ( perfil.nome == nome ){
           return perfil;
         }
       } 
 
       if ( email ){
-        if ( perfil.email == email){
+        if ( perfil.email == email ){
           return perfil;
         }
       }
@@ -31,4 +41,5 @@ export class RepositorioPerfis {
 
     return null;
   }
+
 }

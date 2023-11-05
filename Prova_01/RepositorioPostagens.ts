@@ -9,7 +9,7 @@ export class RepositorioPostagens {
     this._postagem.push(postagem);
   }
 
-  public consultar(id?: number, texto?: string, hashtag?: string, perfil?: Perfil): Postagem[] | null{ 
+  public consultar(id?: string, texto?: string, hashtag?: string, perfil?: Perfil): Postagem[] | null{ 
     let posts: Postagem[] = [];
 
     if ( id ){
@@ -53,7 +53,7 @@ export class RepositorioPostagens {
     return posts;
   }
 
-  public consultarId(id: number): Postagem | null {
+  public consultarId(id: string): Postagem | null {
 
     for (let postagem of this._postagem){
       if (postagem.id == id){
@@ -110,7 +110,7 @@ export class RepositorioPostagens {
   //   return posts;
   // }
 
-  public existeId(id: number): boolean{
+  public existeId(id: string): boolean{
     for (let postagem of this._postagem){
       if (postagem.id == id){
         return true;

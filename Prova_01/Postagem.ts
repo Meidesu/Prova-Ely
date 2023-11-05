@@ -1,14 +1,14 @@
 import { Perfil } from "./Perfil";
 
 export class Postagem {
-  private _id: number;
+  private _id: string;
   private _texto: string;
   private _curtidas: number;
   private _descrurtidas: number;
   private _data: string;
   private _perfil: Perfil;
 
-  constructor(id: number, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil){
+  constructor(id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil){
     this._id = id;
     this._texto = texto;
     this._curtidas = curtidas;
@@ -17,7 +17,7 @@ export class Postagem {
     this._perfil = perfil;  
   }
 
-  get id(): number{
+  get id(): string{
     return this._id;
   }
 

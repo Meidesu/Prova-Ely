@@ -1,16 +1,16 @@
 export class Perfil{
-  private _id: number;
+  private _id: string;
   private _nome: string;
   private _email: string;
   
-  constructor(id: number, nome: string, email: string){
+  constructor(id: string, nome: string, email: string){
     this._id = id;
     this._nome = nome;
     this._email = email;
 
   }
 
-  get id(): number{
+  get id(): string{
     return this._id;
   }
 

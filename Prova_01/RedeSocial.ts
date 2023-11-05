@@ -5,23 +5,30 @@ import { RepositorioPostagens } from "./RepositorioPostagens"
 import { RepositorioPerfis } from "./RepositorioPerfis"
 
 export class RedeSocial {
-    private repositorioPerfis = new RepositorioPerfis();
-    private repositorioPostagens = new RepositorioPostagens();
+    private _repositorioPerfis = new RepositorioPerfis();
+    private _repositorioPostagens = new RepositorioPostagens();
+
+    public criarPerfil(id: string, nome: string, email: string): void{
+        let novoPerfil: Perfil = new Perfil(id, nome, email);
+
+        this.incluirPerfil(novoPerfil);
+    }
 
     incluirPerfil(perfil: Perfil): void {
         if (perfil.id && perfil.nome && perfil.email) {
-            this.repositorioPerfis.incluir(perfil);
+            this._repositorioPerfis.incluir(perfil);
         }
     }
 
-    consultarPerfil(id: number, nome: string, email: string): Perfil | null {
-        return this.repositorioPerfis.consultar(id, nome, email);
+    consultarPerfil(id?: string, nome?: string, email?: string): Perfil | null {
+        
+        return this._repositorioPerfis.consultar(id, nome, email);
     }
 
     incluirPostagem(postagem: Postagem): void {
 
         
-        if ( !postagem.id || this.repositorioPostagens.existeId(postagem.id)){ 
+        if ( !postagem.id || this._repositorioPostagens.existeId(postagem.id)){ 
             return;
         }
 
@@ -39,23 +46,23 @@ export class RedeSocial {
             return;
         }
 
-        this.repositorioPostagens.incluir(postagem);
+        this._repositorioPostagens.incluir(postagem);
         
     }
 
-    consultarPostagens(id: number, texto: string, hashtag: string, perfil: Perfil): Postagem[] | null{
-        return this.repositorioPostagens.consultar(id, texto, hashtag, perfil);
+    consultarPostagens(id: string, texto: string, hashtag: string, perfil: Perfil): Postagem[] | null{
+        return this._repositorioPostagens.consultar(id, texto, hashtag, perfil);
     }
 
-    curtir(idPostagem: number): void {
-        const postagem = this.repositorioPostagens.consultarId(idPostagem);
+    curtir(idPostagem: string): void {
+        const postagem = this._repositorioPostagens.consultarId(idPostagem);
         if (postagem) {
             postagem.curtir();
         }
     }
 
-    descurtir(idPostagem: number): void {
-        const postagem = this.repositorioPostagens.consultarId(idPostagem);
+    descurtir(idPostagem: string): void {
+        const postagem = this._repositorioPostagens.consultarId(idPostagem);
         if (postagem) {
             postagem.descurtir();
         }
@@ -70,12 +77,12 @@ export class RedeSocial {
         }
     }
 
-    exibirPostagensPorPerfil(id: number): Postagem[] {
-      const perfil: Perfil|null = this.repositorioPerfis.consultar(id);
+    exibirPostagensPorPerfil(id: string): Postagem[] {
+      const perfil: Perfil|null = this._repositorioPerfis.consultar(id);
       let postagens: Postagem[] = [];
       
       if ( perfil ){
-        postagens = this.repositorioPostagens.consultarPorPerfil(perfil);
+        postagens = this._repositorioPostagens.consultarPorPerfil(perfil);
 
         postagens = postagens.filter(postagem => { if (postagem instanceof PostagemAvancada) {
           return postagem.visualizacoesRestantes <= 0;
@@ -88,7 +95,7 @@ export class RedeSocial {
     }
     
     exibirPostagensPorHashtag(hashtag: string): PostagemAvancada[] {
-        let postagens: PostagemAvancada[] = this.repositorioPostagens.consultarPorHashtag(hashtag);
+        let postagens: PostagemAvancada[] = this._repositorioPostagens.consultarPorHashtag(hashtag);
 
         if ( postagens.length == 0){
             return postagens; // Retorna um array vazio se não houver postagens com a hashtag
@@ -101,6 +108,10 @@ export class RedeSocial {
         this.decrementarVisualizacoes(postagens); // decrementa as visualizações das postagens
 
         return postagens; // Retorna o array com as postagens que possuem a hashtag
+    }
+
+    public existePerfil(nome: string): boolean {
+        return this._repositorioPerfis.existeNome(nome);
     }
 
     /**

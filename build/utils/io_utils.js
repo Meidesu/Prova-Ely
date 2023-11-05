@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
+exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
+var ulidx_1 = require("ulidx");
 var readline_sync_1 = require("readline-sync");
 function input(label) {
     return (0, readline_sync_1.question)(label);
@@ -15,6 +16,24 @@ function inputInt(label) {
     return Number(numStr);
 }
 exports.inputInt = inputInt;
+function inputEmail(label) {
+    var email = (0, readline_sync_1.question)(label);
+    while (!ehEmail(email)) {
+        print('Email inválido!');
+        email = (0, readline_sync_1.question)(label);
+    }
+    return email;
+}
+exports.inputEmail = inputEmail;
+function inputId(label) {
+    var id = input(label);
+    while (!(0, ulidx_1.isValid)(id)) {
+        print('ID inválido');
+        id = input(label);
+    }
+    return id;
+}
+exports.inputId = inputId;
 function print() {
     var parameters = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -30,7 +49,6 @@ function print() {
 exports.print = print;
 // Usa a biblioteca readline-sync para pausar a aplicação até que o usuario aperte Enter
 function continuar() {
-    print();
     (0, readline_sync_1.keyIn)("[Espaco para continuar...]");
     limparConsole();
 }
@@ -43,3 +61,18 @@ function limparConsole() {
     console.clear();
 }
 exports.limparConsole = limparConsole;
+function ehEmail(texto) {
+    var partesEmail = texto.split('@');
+    if (partesEmail.length !== 2) {
+        return false;
+    }
+    var parteLocal = partesEmail[0], parteDominio = partesEmail[1];
+    var partesDominio = parteDominio.split('.');
+    return (parteLocal.length > 0 &&
+        partesDominio.length == 2 &&
+        partesDominio.every(function (parte) { return parte.length > 1; }));
+}
+function gerarId() {
+    return (0, ulidx_1.ulid)();
+}
+exports.gerarId = gerarId;
