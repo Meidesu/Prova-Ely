@@ -25,6 +25,31 @@ export class RedeSocial {
         return this._repositorioPerfis.consultar(id, nome, email);
     }
 
+    criarPostagem(id: string, texto: string, data: string, perfil: Perfil, curtidas: number = 0, descrurtidas: number = 0,  hashtags?: string[], visuRestantes?: number): void {
+        let postagem: Postagem;
+
+        if ( hashtags && visuRestantes){
+            postagem = new PostagemAvancada(id, texto, curtidas, descrurtidas, data, perfil, hashtags, visuRestantes);
+
+            this.incluirPostagem(postagem);
+            console.log(postagem);
+            
+            return;
+        }
+        
+        postagem = new Postagem(id, texto, curtidas, descrurtidas, data, perfil);
+        
+        this.incluirPostagem(postagem);
+        console.log(postagem);
+    }
+
+    // criarPostagemAvancada(id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil, hashtags: string[], visuRestantes: number): void {
+    //     let postagem: Postagem = new PostagemAvancada(id, texto, curtidas, descrurtidas, data, perfil, hashtags, visuRestantes);
+
+    //     this.incluirPostagem(postagem);
+    //     //id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil
+    // }
+
     incluirPostagem(postagem: Postagem): void {
 
         
@@ -112,6 +137,10 @@ export class RedeSocial {
 
     public existePerfil(nome: string): boolean {
         return this._repositorioPerfis.existeNome(nome);
+    }
+
+    public obterPerfis(): Perfil[] {
+        return this._repositorioPerfis.perfis;
     }
 
     /**

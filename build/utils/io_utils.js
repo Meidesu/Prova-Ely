@@ -1,16 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
+exports.simOuNao = exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
 var ulidx_1 = require("ulidx");
 var readline_sync_1 = require("readline-sync");
 function input(label) {
-    return (0, readline_sync_1.question)(label);
+    var out = (0, readline_sync_1.question)(label);
+    while (out == '') {
+        print("Texto está vazio!\n");
+        out = (0, readline_sync_1.question)(label);
+    }
+    return out;
+    // return question(label);
 }
 exports.input = input;
 function inputInt(label) {
     var numStr = (0, readline_sync_1.question)(label);
     while (isNaN(Number(numStr)) || numStr == '' || Number(numStr) % 1 != 0) {
-        print("Valor inválido!");
+        print("Valor inválido!\n");
         numStr = (0, readline_sync_1.question)(label);
     }
     return Number(numStr);
@@ -19,7 +25,7 @@ exports.inputInt = inputInt;
 function inputEmail(label) {
     var email = (0, readline_sync_1.question)(label);
     while (!ehEmail(email)) {
-        print('Email inválido!');
+        print('Email inválido!\n');
         email = (0, readline_sync_1.question)(label);
     }
     return email;
@@ -57,6 +63,10 @@ function selecao(opcoes) {
     return (0, readline_sync_1.keyInSelect)(opcoes, ">> ") + 1;
 }
 exports.selecao = selecao;
+function simOuNao(label) {
+    return (0, readline_sync_1.keyInYNStrict)(label);
+}
+exports.simOuNao = simOuNao;
 function limparConsole() {
     console.clear();
 }

@@ -42,4 +42,8 @@ export class RepositorioPerfis {
     return null;
   }
 
+  get perfis(): Perfil[] {
+    return this._perfis
+  }
+
 }

@@ -1,4 +1,4 @@
-import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId } from "../utils/io_utils";
+import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId, simOuNao } from "../utils/io_utils";
 import { RedeSocial } from "./RedeSocial";
 
 class App {
@@ -6,7 +6,7 @@ class App {
   
   
   public rodarAplicacao(): void {
-    let menu: string[] = ['asd', 'sadf', 'sdcv'];    
+    let menu: string[] = ['asd', 'sadf', 'sdcv'];
     
     let opcao: number = selecao(menu);
 
@@ -18,6 +18,10 @@ class App {
           break;
         case 2:
           this.consultarPerfil();
+
+          break;
+        case 3:
+          this.incluirPostagem();
 
           break;
       
@@ -71,6 +75,10 @@ class App {
         email = inputEmail('Informe o email: ');
 
         break;
+      case 0:
+
+        return;
+        break;
         
       default:
         
@@ -88,8 +96,45 @@ class App {
       print("Perfil não encontrado!");
       
     }
+  }
+
+  public incluirPostagem(): void {
+    let perfis = this._redeSocial.obterPerfis();
+    let nomesPerfis = [];
+
+    for ( let perfil of perfis ) {
+      nomesPerfis.push(perfil.nome);
+    }
+
+    print('Escolha o perfil associado: ');
+    let indice: number = selecao(nomesPerfis);
+
+    let id: string = gerarId();
+    let perfil = perfis[indice-1];
+    let texto: string = input('Texto: ');
+    let data: string = new Date().toLocaleString();
+    let hashtags: string[] | undefined;
+    let visualizacoesRestantes: number | undefined;
+
+    let ehAvancada: boolean = simOuNao('Deseja adicionar hashtags?')
+
+    if ( ehAvancada ){
+      hashtags = [];
+      visualizacoesRestantes = 10;
+      let opcao: number;
+      
+      do {
+        hashtags.push(input('#'));
+
+        opcao = selecao(['Adicionar outra']);
+      } while ( opcao != 0 );
+
+    }
+
+    this._redeSocial.criarPostagem(id, texto, data, perfil, 0, 0, hashtags, visualizacoesRestantes)
 
   }
+
 }
 
 

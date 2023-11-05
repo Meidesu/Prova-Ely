@@ -38,6 +38,13 @@ var RepositorioPerfis = /** @class */ (function () {
         }
         return null;
     };
+    Object.defineProperty(RepositorioPerfis.prototype, "perfis", {
+        get: function () {
+            return this._perfis;
+        },
+        enumerable: false,
+        configurable: true
+    });
     return RepositorioPerfis;
 }());
 exports.RepositorioPerfis = RepositorioPerfis;

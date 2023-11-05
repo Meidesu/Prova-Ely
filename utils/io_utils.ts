@@ -1,16 +1,24 @@
 import { isValid, ulid } from "ulidx";
-import { keyIn, keyInPause, keyInSelect, question, questionEMail } from "readline-sync";
+import { keyIn, keyInPause, keyInSelect, keyInYNStrict, question, questionEMail } from "readline-sync";
 
 
 function input(label: string): string{
-  return question(label);
+  let out: string = question(label);
+
+  while ( out == '' ){
+    print("Texto está vazio!\n");
+    out = question(label);
+  }
+
+  return out;
+  // return question(label);
 }
 
 function inputInt(label: string): number{
   let numStr: string = question(label);
 
   while ( isNaN(Number(numStr)) || numStr == '' ||Number(numStr)%1 != 0){
-    print("Valor inválido!")
+    print("Valor inválido!\n");
     numStr = question(label);
   }
 
@@ -21,7 +29,7 @@ function inputEmail(label: string): string {
   let email: string = question(label);
 
   while ( !ehEmail(email) ){
-    print('Email inválido!');
+    print('Email inválido!\n');
 
     email = question(label)
   }
@@ -63,6 +71,10 @@ function selecao(opcoes: string[]){
   return keyInSelect(opcoes, ">> ") + 1;
 }
 
+function simOuNao(label: string): boolean {
+  return keyInYNStrict(label);
+}
+
 function limparConsole() {
   console.clear();
 }
@@ -88,4 +100,4 @@ function gerarId() {
   return ulid();
 }
 
-export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId}
+export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId, simOuNao}

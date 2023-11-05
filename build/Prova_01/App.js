@@ -17,6 +17,9 @@ var App = /** @class */ (function () {
                 case 2:
                     this.consultarPerfil();
                     break;
+                case 3:
+                    this.incluirPostagem();
+                    break;
                 default:
                     break;
             }
@@ -52,6 +55,9 @@ var App = /** @class */ (function () {
             case 3:
                 email = (0, io_utils_1.inputEmail)('Informe o email: ');
                 break;
+            case 0:
+                return;
+                break;
             default:
                 break;
         }
@@ -64,6 +70,33 @@ var App = /** @class */ (function () {
         else {
             (0, io_utils_1.print)("Perfil não encontrado!");
         }
+    };
+    App.prototype.incluirPostagem = function () {
+        var perfis = this._redeSocial.obterPerfis();
+        var nomesPerfis = [];
+        for (var _i = 0, perfis_1 = perfis; _i < perfis_1.length; _i++) {
+            var perfil_1 = perfis_1[_i];
+            nomesPerfis.push(perfil_1.nome);
+        }
+        (0, io_utils_1.print)('Escolha o perfil associado: ');
+        var indice = (0, io_utils_1.selecao)(nomesPerfis);
+        var id = (0, io_utils_1.gerarId)();
+        var perfil = perfis[indice - 1];
+        var texto = (0, io_utils_1.input)('Texto: ');
+        var data = new Date().toLocaleString();
+        var hashtags;
+        var visualizacoesRestantes;
+        var ehAvancada = (0, io_utils_1.simOuNao)('Deseja adicionar hashtags?');
+        if (ehAvancada) {
+            hashtags = [];
+            visualizacoesRestantes = 10;
+            var opcao = void 0;
+            do {
+                hashtags.push((0, io_utils_1.input)('#'));
+                opcao = (0, io_utils_1.selecao)(['Adicionar outra']);
+            } while (opcao != 0);
+        }
+        this._redeSocial.criarPostagem(id, texto, data, perfil, 0, 0, hashtags, visualizacoesRestantes);
     };
     return App;
 }());

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedeSocial = void 0;
+var Postagem_1 = require("./Postagem");
 var Perfil_1 = require("./Perfil");
 var PostagemAvancada_1 = require("./PostagemAvancada");
 var RepositorioPostagens_1 = require("./RepositorioPostagens");
@@ -41,6 +42,25 @@ var RedeSocial = /** @class */ (function () {
     RedeSocial.prototype.consultarPerfil = function (id, nome, email) {
         return this._repositorioPerfis.consultar(id, nome, email);
     };
+    RedeSocial.prototype.criarPostagem = function (id, texto, data, perfil, curtidas, descrurtidas, hashtags, visuRestantes) {
+        if (curtidas === void 0) { curtidas = 0; }
+        if (descrurtidas === void 0) { descrurtidas = 0; }
+        var postagem;
+        if (hashtags && visuRestantes) {
+            postagem = new PostagemAvancada_1.PostagemAvancada(id, texto, curtidas, descrurtidas, data, perfil, hashtags, visuRestantes);
+            this.incluirPostagem(postagem);
+            console.log(postagem);
+            return;
+        }
+        postagem = new Postagem_1.Postagem(id, texto, curtidas, descrurtidas, data, perfil);
+        this.incluirPostagem(postagem);
+        console.log(postagem);
+    };
+    // criarPostagemAvancada(id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil, hashtags: string[], visuRestantes: number): void {
+    //     let postagem: Postagem = new PostagemAvancada(id, texto, curtidas, descrurtidas, data, perfil, hashtags, visuRestantes);
+    //     this.incluirPostagem(postagem);
+    //     //id: string, texto: string, curtidas: number, descrurtidas: number, data: string, perfil: Perfil
+    // }
     RedeSocial.prototype.incluirPostagem = function (postagem) {
         if (!postagem.id || this._repositorioPostagens.existeId(postagem.id)) {
             return;
@@ -108,6 +128,9 @@ var RedeSocial = /** @class */ (function () {
     };
     RedeSocial.prototype.existePerfil = function (nome) {
         return this._repositorioPerfis.existeNome(nome);
+    };
+    RedeSocial.prototype.obterPerfis = function () {
+        return this._repositorioPerfis.perfis;
     };
     return RedeSocial;
 }());
