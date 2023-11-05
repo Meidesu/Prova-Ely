@@ -44,4 +44,15 @@ export class PostagemAvancada extends Postagem {
 
   }
 
+  public toString(): string {
+    let out: string = super.toString();
+    
+    out += `
+    Hashtags: #${this._hashtags}
+
+    Visualizações Restantes: ${this._visualizacoesRestantes}`;
+
+    return out; 
+  }
+
 }

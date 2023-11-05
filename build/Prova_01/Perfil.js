@@ -28,6 +28,10 @@ var Perfil = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Perfil.prototype.toString = function () {
+        var out = "\n  ID: ".concat(this._id, "\n  Nome: ").concat(this._nome, "\n  Email: ").concat(this._email);
+        return out;
+    };
     return Perfil;
 }());
 exports.Perfil = Perfil;

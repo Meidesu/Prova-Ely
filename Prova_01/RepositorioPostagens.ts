@@ -57,6 +57,12 @@ export class RepositorioPostagens {
 
     for (let postagem of this._postagem){
       if (postagem.id == id){
+        if ( postagem instanceof PostagemAvancada ){
+          if (postagem.visualizacoesRestantes <= 0){
+            return null;
+          }
+        }
+
         return postagem;
       }
     }
@@ -64,12 +70,17 @@ export class RepositorioPostagens {
     return null;
   }
 
-  public consultarPorHashtag(hashtag: string): PostagemAvancada[]{
+  public consultarPorHashtag(hashtag: string): PostagemAvancada[] | null{
 
-    let posts: PostagemAvancada[] = [];
+    let posts: PostagemAvancada[] | null = [];
 
     for (let postagem of this._postagem){
       if (postagem instanceof PostagemAvancada){
+
+        if (postagem.visualizacoesRestantes <= 0){
+          continue;
+        }
+
         if ( ( <PostagemAvancada> postagem).existeHashtag(hashtag)){
           posts.push(postagem);
         }
@@ -79,18 +90,21 @@ export class RepositorioPostagens {
     return posts;
   }
 
-  public consultarPorPerfil(perfil: Perfil): Postagem[]{
-    let posts: Postagem[] = [];
+  public consultarPorPerfil(perfil: Perfil): Postagem[] | null{
+    let posts: Postagem[] | null = [];
 
     for (let postagem of this._postagem){
       if (postagem.perfil == perfil){
+        if (postagem instanceof PostagemAvancada){
+
+          if (postagem.visualizacoesRestantes <= 0){
+            continue;
+          }
+        }
+
         posts.push(postagem);
       }
     }
-
-    // if (posts.length == 0){
-    //   return null;
-    // }
 
     return posts;
   }
@@ -119,25 +133,6 @@ export class RepositorioPostagens {
 
     return false;
   }
-
-
-  // public consultar(id: number, texto: string, hashtag: string, perfil: Perfil): Postagem[] | null{ 
-  //   let posts: Postagem[] = [];
-  //   for (let postagem of this._postagem){
-  //     if (postagem.id == id || postagem.texto == texto || postagem.perfil == perfil){
-  //       posts.push(postagem);
-  //       continue;
-  //     }
-  
-  //     if (postagem instanceof PostagemAvancada){
-  //       if ( ( <PostagemAvancada> postagem).existeHashtag(hashtag)){
-  //         posts.push(postagem);
-  //       }
-  //     }
-  
-  //   }
-  //   return null;
-  // }
 }
 /*consultar(id: number, texto: string, hashtag: string, perfil: Perfil): Postagem[] {
   return this.postagens.filter(

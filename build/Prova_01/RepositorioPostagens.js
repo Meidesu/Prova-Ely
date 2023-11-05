@@ -5,21 +5,6 @@ var PostagemAvancada_1 = require("./PostagemAvancada");
 var RepositorioPostagens = /** @class */ (function () {
     function RepositorioPostagens() {
         this._postagem = [];
-        // public consultar(id: number, texto: string, hashtag: string, perfil: Perfil): Postagem[] | null{ 
-        //   let posts: Postagem[] = [];
-        //   for (let postagem of this._postagem){
-        //     if (postagem.id == id || postagem.texto == texto || postagem.perfil == perfil){
-        //       posts.push(postagem);
-        //       continue;
-        //     }
-        //     if (postagem instanceof PostagemAvancada){
-        //       if ( ( <PostagemAvancada> postagem).existeHashtag(hashtag)){
-        //         posts.push(postagem);
-        //       }
-        //     }
-        //   }
-        //   return null;
-        // }
     }
     RepositorioPostagens.prototype.incluir = function (postagem) {
         this._postagem.push(postagem);
@@ -63,6 +48,11 @@ var RepositorioPostagens = /** @class */ (function () {
         for (var _i = 0, _a = this._postagem; _i < _a.length; _i++) {
             var postagem = _a[_i];
             if (postagem.id == id) {
+                if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
+                    if (postagem.visualizacoesRestantes <= 0) {
+                        return null;
+                    }
+                }
                 return postagem;
             }
         }
@@ -73,6 +63,9 @@ var RepositorioPostagens = /** @class */ (function () {
         for (var _i = 0, _a = this._postagem; _i < _a.length; _i++) {
             var postagem = _a[_i];
             if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
+                if (postagem.visualizacoesRestantes <= 0) {
+                    continue;
+                }
                 if (postagem.existeHashtag(hashtag)) {
                     posts.push(postagem);
                 }
@@ -85,12 +78,14 @@ var RepositorioPostagens = /** @class */ (function () {
         for (var _i = 0, _a = this._postagem; _i < _a.length; _i++) {
             var postagem = _a[_i];
             if (postagem.perfil == perfil) {
+                if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
+                    if (postagem.visualizacoesRestantes <= 0) {
+                        continue;
+                    }
+                }
                 posts.push(postagem);
             }
         }
-        // if (posts.length == 0){
-        //   return null;
-        // }
         return posts;
     };
     // public consultarTexto(texto: string): Postagem[] | null{

@@ -21,4 +21,13 @@ export class Perfil{
   get email(): string{
     return this._email;
   }
+
+  public toString(): string {
+    let out: string = `
+  ID: ${this._id}
+  Nome: ${this._nome}
+  Email: ${this._email}`;
+    
+    return out;
+  }
 }

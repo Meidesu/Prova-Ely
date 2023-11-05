@@ -58,6 +58,11 @@ var PostagemAvancada = /** @class */ (function (_super) {
             this._visualizacoesRestantes--;
         }
     };
+    PostagemAvancada.prototype.toString = function () {
+        var out = _super.prototype.toString.call(this);
+        out += "\n    Hashtags: #".concat(this._hashtags, "\n\n    Visualiza\u00E7\u00F5es Restantes: ").concat(this._visualizacoesRestantes);
+        return out;
+    };
     return PostagemAvancada;
 }(Postagem_1.Postagem));
 exports.PostagemAvancada = PostagemAvancada;

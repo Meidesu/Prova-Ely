@@ -53,4 +53,15 @@ export class Postagem {
     return this._curtidas > this._descrurtidas * 1.5;
   }
 
+  public toString(): string {
+    let out: string = `
+    ID: ${this._id}
+
+  Perfil: ${this._perfil.nome}\t\t\tData: ${this._data}
+    Texto: ${this._texto}
+
+    Curtidas👍: ${this._curtidas}  👎: ${this._descrurtidas}`;
+
+    return out;
+  }
 }
