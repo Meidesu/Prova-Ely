@@ -113,6 +113,22 @@ var RedeSocial = /** @class */ (function () {
     RedeSocial.prototype.obterPostagens = function () {
         return this._repositorioPostagens.obterPostagens();
     };
+    RedeSocial.prototype.obterPostagensPopular = function () {
+        var postagens = this.obterPostagens();
+        var postagensPop = [];
+        if (!postagens) {
+            return null;
+        }
+        for (var _i = 0, postagens_2 = postagens; _i < postagens_2.length; _i++) {
+            var post = postagens_2[_i];
+            if (post.ehPopular()) {
+                postagensPop.push(post);
+            }
+        }
+        if (!postagensPop)
+            return null;
+        return postagensPop;
+    };
     return RedeSocial;
 }());
 exports.RedeSocial = RedeSocial;

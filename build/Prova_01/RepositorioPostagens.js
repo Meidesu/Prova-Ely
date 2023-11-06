@@ -22,22 +22,25 @@ var RepositorioPostagens = /** @class */ (function () {
             var post = _a[_i];
             if (hashtag) {
                 if (post instanceof PostagemAvancada_1.PostagemAvancada) {
-                    if (!post.existeHashtag(hashtag)) {
+                    if (post.existeHashtag(hashtag)) {
+                        posts.push(post);
                         continue;
                     }
                 }
             }
             if (texto) {
-                if (!post.texto.includes(texto)) {
+                console.log("1ele ta puxando por texto dd");
+                if (post.texto.includes(texto)) {
+                    posts.push(post);
                     continue;
                 }
             }
             if (perfil) {
-                if (post.perfil != perfil) {
+                if (post.perfil == perfil) {
+                    posts.push(post);
                     continue;
                 }
             }
-            posts.push(post);
         }
         if (posts.length == 0) {
             return null;

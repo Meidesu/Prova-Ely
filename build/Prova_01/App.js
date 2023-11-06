@@ -9,17 +9,18 @@ var App = /** @class */ (function () {
         this._redeSocial = new RedeSocial_1.RedeSocial();
     }
     App.prototype.rodarAplicacao = function () {
+        this.carregarPerfis();
+        this.carregarPostagens();
         (0, io_utils_1.limparConsole)();
+        (0, io_utils_1.exibirTitulo)();
         var menu = [
             'Incluir perfil',
             'Consultar perfil',
             'Incluir Postagem',
             'Consultar postagem',
             'Exibir postagens do perfil',
-            'Carregar dados',
-            'Salvar perfis',
-            'Carregar postagens',
-            'Salvar postagens'
+            'Curtir/descurtir postagem',
+            'Exibir postagens populares'
         ];
         var opcao = (0, io_utils_1.selecao)(menu);
         while (opcao != 0) {
@@ -40,24 +41,24 @@ var App = /** @class */ (function () {
                     this.exibirPostagensPorPerfil();
                     break;
                 case 6:
-                    this.carregarPerfis();
+                    this.curtirDescurtirPostagem();
                     break;
                 case 7:
-                    this.salvarPerfis();
-                    break;
-                case 8:
-                    this.carregarPostagens();
-                    break;
-                case 9:
-                    this.salvarPostagens();
+                    this.exibirPostagensPopulares();
                     break;
                 default:
                     break;
             }
+            this.salvarPerfis();
+            this.salvarPostagens();
             (0, io_utils_1.continuar)();
+            (0, io_utils_1.exibirTitulo)();
             opcao = (0, io_utils_1.selecao)(menu);
             // this.exibirMenu()
         }
+        (0, io_utils_1.print)('Fim do programa!');
+        this.salvarPerfis();
+        this.salvarPostagens();
     };
     App.prototype.incluirPerfil = function () {
         var id = (0, io_utils_1.gerarId)();
@@ -131,30 +132,27 @@ var App = /** @class */ (function () {
         var texto;
         var hashtags;
         var perfil;
-        do {
-            switch (opcao) {
-                case 1:
-                    id = (0, io_utils_1.inputId)('Informe o ID: ');
-                    break;
-                case 2:
-                    texto = (0, io_utils_1.input)('Informe o texto: ');
-                    break;
-                case 3:
-                    hashtags = (0, io_utils_1.input)('Informe a hashtag: #');
-                    break;
-                case 4:
-                    var perfilSelecionado = this.selecionarPerfil();
-                    if (!perfilSelecionado) {
-                        (0, io_utils_1.print)('Nao e possivel pesquisar por perfil, pois nao ha perfis cadastrados');
-                        return;
-                    }
-                    perfil = perfilSelecionado;
-                    break;
-                default:
-                    break;
-            }
-            opcao = (0, io_utils_1.selecao)(menu);
-        } while (opcao != 0);
+        switch (opcao) {
+            case 1:
+                id = (0, io_utils_1.inputId)('Informe o ID: ');
+                break;
+            case 2:
+                texto = (0, io_utils_1.input)('Informe o texto: ');
+                break;
+            case 3:
+                hashtags = (0, io_utils_1.input)('Informe a hashtag: #');
+                break;
+            case 4:
+                var perfilSelecionado = this.selecionarPerfil();
+                if (!perfilSelecionado) {
+                    (0, io_utils_1.print)('Nao e possivel pesquisar por perfil, pois nao ha perfis cadastrados');
+                    return;
+                }
+                perfil = perfilSelecionado;
+                break;
+            default:
+                break;
+        }
         var postagem = this._redeSocial.consultarPostagens(id, texto, hashtags, perfil);
         if (postagem) {
             postagem.forEach(function (post) {
@@ -240,6 +238,7 @@ var App = /** @class */ (function () {
                 continue;
             }
             var dados = linha.split("#");
+            //01HEJ8RK0P54BCKAD3BPQ1XDG7#exemplo sem tags#exemplo sem tags#0#0#06/11/2023 09:12:21#01HEH3A28CNFF0SKG9PYB4ZERNP
             var id = dados[0];
             var texto_1 = dados[1];
             var curtidas = Number(dados[2]);
@@ -258,11 +257,12 @@ var App = /** @class */ (function () {
                 continue;
             }
             var perfil = this._redeSocial.consultarPerfil(idPerfil);
-            if (!perfil)
+            if (!perfil) {
                 continue;
+            }
             this._redeSocial.criarPostagem(id, texto_1, data, perfil, curtidas, descurtidas, hashtags, visuRestantes);
         }
-        (0, io_utils_1.print)('Postagens carregados com sucesso!');
+        (0, io_utils_1.print)('\nPostagens carregados com sucesso!');
         (0, io_utils_1.print)("Total de ocorrencias: ".concat(ocorrencias));
     };
     App.prototype.salvarPostagens = function () {
@@ -276,19 +276,67 @@ var App = /** @class */ (function () {
         for (var _i = 0, postagens_1 = postagens; _i < postagens_1.length; _i++) {
             var post = postagens_1[_i];
             var tipo = 'P';
-            dados += "".concat(post.id, "#").concat(post.texto, "#").concat(post.texto, "#").concat(post.curtidas, "#").concat(post.descrurtidas, "#").concat(post.data, "#").concat(post.perfil.id, "\n");
+            dados += "".concat(post.id, "#").concat(post.texto, "#").concat(post.curtidas, "#").concat(post.descrurtidas, "#").concat(post.data, "#").concat(post.perfil.id);
             if (post instanceof PostagemAvancada_1.PostagemAvancada) {
                 tipo = 'PA';
+                var hastags = '';
                 // Dividir as hashtags
-                dados += "#".concat(tipo, "#").concat(post.hashtags, "#").concat(post.visualizacoesRestantes, "\n");
+                for (var _a = 0, _b = post.hashtags; _a < _b.length; _a++) {
+                    var tag = _b[_a];
+                    hastags += "".concat(tag, "-");
+                }
+                hastags = hastags.slice(0, -1);
+                dados += "#".concat(tipo, "#").concat(hastags, "#").concat(post.visualizacoesRestantes, "\n");
             }
-            dados += "".concat(tipo, "\n");
+            else {
+                dados += "#".concat(tipo, "\n");
+            }
         }
         dados = dados.slice(0, -1);
         (0, fs_utils_1.escreverArquivo)('../../Prova_01/DataBase/postagens.txt', dados);
     };
+    App.prototype.selecionarPostagem = function () {
+        var postagens = this._redeSocial.obterPostagens();
+        if (!postagens) {
+            return null;
+        }
+        var opcoes = [];
+        for (var _i = 0, postagens_2 = postagens; _i < postagens_2.length; _i++) {
+            var post_1 = postagens_2[_i];
+            opcoes.push(post_1.toString());
+        }
+        (0, io_utils_1.print)('Escolha o perfil associado: ');
+        var indice = (0, io_utils_1.selecao)(opcoes);
+        var post = postagens[indice - 1];
+        return post;
+    };
+    App.prototype.curtirDescurtirPostagem = function () {
+        var postagem = this.selecionarPostagem();
+        if (!postagem) {
+            (0, io_utils_1.print)('\nNenhuma postagem disponivel!');
+            return;
+        }
+        var opcao = (0, io_utils_1.selecao)(['Curtir', 'Descurtir']);
+        switch (opcao) {
+            case 1:
+                this._redeSocial.curtir(postagem.id);
+                break;
+            case 2:
+                this._redeSocial.descurtir(postagem.id);
+                break;
+        }
+        (0, io_utils_1.print)(postagem.toString());
+    };
+    App.prototype.exibirPostagensPopulares = function () {
+        var postagensPop = this._redeSocial.obterPostagensPopular();
+        if (!postagensPop)
+            return;
+        postagensPop.forEach(function (post) {
+            (0, io_utils_1.print)(post.toString());
+        });
+    };
     return App;
-}());
+}()); // final da classe 
 var app = new App();
 app.rodarAplicacao();
 // import { readFileSync, writeFileSync } from 'fs';

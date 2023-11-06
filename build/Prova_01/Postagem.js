@@ -62,7 +62,7 @@ var Postagem = /** @class */ (function () {
         return this._curtidas > this._descrurtidas * 1.5;
     };
     Postagem.prototype.toString = function () {
-        var out = "\n    ID: ".concat(this._id, "\n\n  Perfil: ").concat(this._perfil.nome, "\t\t\tData: ").concat(this._data, "\n    Texto: ").concat(this._texto, "\n\n    Curtidas\uD83D\uDC4D: ").concat(this._curtidas, "  \uD83D\uDC4E: ").concat(this._descrurtidas);
+        var out = "\n---------------------------------------------------------------------------------------------    \n    ID: ".concat(this._id, "\n\n    Perfil: ").concat(this._perfil.nome, "\t\t\tData: ").concat(this._data, "\n    Texto: ").concat(this._texto, "\n\n    Curtidas\uD83D\uDC4D: ").concat(this._curtidas, "  \uD83D\uDC4E: ").concat(this._descrurtidas);
         return out;
     };
     return Postagem;
