@@ -140,4 +140,8 @@ export class RedeSocial {
     obterPerfis(): Perfil[] {
         return this._repositorioPerfis.perfis;
     }  
+
+    obterPostagens(): Postagem[] | null{
+        return this._repositorioPostagens.obterPostagens();
+    }  
 }   

@@ -133,6 +133,28 @@ export class RepositorioPostagens {
 
     return false;
   }
+
+  public obterPostagens(): Postagem[] | null{
+    // Obter apenas os perfis com visualizações resdtantes
+
+    let posts: Postagem[] = [];
+
+    for (let postagem of this._postagem){
+      if (postagem instanceof PostagemAvancada){
+        if (postagem.visualizacoesRestantes <= 0){
+          continue;
+        }
+      }
+
+      posts.push(postagem);
+    }
+
+    if (posts.length == 0){
+      return null;
+    }
+
+    return posts;
+  }
 }
 /*consultar(id: number, texto: string, hashtag: string, perfil: Perfil): Postagem[] {
   return this.postagens.filter(

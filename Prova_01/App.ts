@@ -1,8 +1,9 @@
-import { PostagemAvancada } from "./PostagemAvancada";
 import { Postagem } from "./Postagem";
-import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId, simOuNao } from "../utils/io_utils";
 import { Perfil } from "./Perfil";
 import { RedeSocial } from "./RedeSocial";
+import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail } from "../utils/io_utils";
+import { escreverArquivo, lerArquivo } from "../utils/fs_utils";
+import { PostagemAvancada } from "./PostagemAvancada";
 
 class App {
   private _redeSocial: RedeSocial = new RedeSocial();
@@ -16,7 +17,11 @@ class App {
       'Consultar perfil',
       'Incluir Postagem',
       'Consultar postagem',
-      'Exibir postagens do perfil'
+      'Exibir postagens do perfil',
+      'Carregar dados',
+      'Salvar perfis',
+      'Carregar postagens',
+      'Salvar postagens'
     ];
     
     let opcao: number = selecao(menu);
@@ -41,6 +46,22 @@ class App {
           break;
         case 5:
           this.exibirPostagensPorPerfil();
+
+          break;
+        case 6:
+          this.carregarPerfis();
+
+          break;
+        case 7:
+          this.salvarPerfis();
+
+          break;
+        case 8:
+          this.carregarPostagens();
+
+          break;
+        case 9:
+          this.salvarPostagens();
 
           break;
       
@@ -253,6 +274,131 @@ class App {
     }
     
   }
+
+  public carregarPerfis(): void {
+    let linhasPerfil: string[] = lerArquivo('../../Prova_01/DataBase/perfis.txt');
+
+    let ocorrencias: number = 0;
+
+    for (let linha of linhasPerfil){
+      if ( linha == ''){
+        continue;
+      }
+
+      let dados: string[] = linha.split("#");
+
+      let id: string = dados[0];
+      let nome: string = dados[1];
+      let email: string = dados[2];
+
+      if ( !idValido(id) || !ehEmail(email)){
+        ocorrencias++;
+        continue;
+      }
+
+      this._redeSocial.criarPerfil(id, nome, email);
+    }
+
+    print('Dados carregados com sucesso!');
+    print(`Total de ocorrencias: ${ocorrencias}`);
+
+  }
+
+  public salvarPerfis(): void {
+    let perfis: Perfil[]  = this._redeSocial.obterPerfis();
+
+    if (perfis.length == 0){
+      print('\nNenhum perfil para salvar!');
+
+      return;
+    } 
+
+    let dados: string = '';
+
+    for ( let perfil of perfis ){
+      dados += `${perfil.id}#${perfil.nome}#${perfil.email}\n`
+    }
+
+    dados = dados.slice(0, -1);
+
+    escreverArquivo('../../Prova_01/DataBase/perfis.txt', dados);
+  }
+
+  public carregarPostagens(): void {
+    let linhasPostagem: string[] = lerArquivo('../../Prova_01/DataBase/postagens.txt');
+
+    let ocorrencias: number = 0;
+
+    for (let linha of linhasPostagem){
+      if ( linha == ''){
+        continue;
+      }
+
+      let dados: string[] = linha.split("#");
+
+      let id: string = dados[0];
+      let texto: string = dados[1]; 
+      let curtidas: number = Number(dados[2]); 
+      let descurtidas: number = Number(dados[3]); 
+      let data: string = dados[4]; 
+      let idPerfil: string = dados[5];
+      let tipo: string = dados[6];
+      let hashtags: string[]|undefined;
+      let visuRestantes: number|undefined;
+
+      if ( tipo == 'PA' ){
+        hashtags = dados[7].split('-');
+        visuRestantes = Number(dados[8]);
+      }
+
+      if ( !idValido(id) || !idValido(idPerfil)){
+        ocorrencias++;
+        continue;
+      }
+
+      let perfil: Perfil|null = this._redeSocial.consultarPerfil(idPerfil);
+
+      if ( !perfil ) continue;
+
+      this._redeSocial.criarPostagem(id, texto, data, perfil, curtidas, descurtidas, hashtags, visuRestantes);
+    }
+
+    print('Postagens carregados com sucesso!');
+    print(`Total de ocorrencias: ${ocorrencias}`);
+    
+  }
+  
+  public salvarPostagens(): void {
+    // 3456YGDE3456Y#texto#curtidas#descurtidas#data#idPerfil#P/PA#hash-hash2-hash3#visurestantes
+    let postagens: Postagem[]|null  = this._redeSocial.obterPostagens();
+
+    if (!postagens){
+      print('\nNenhuma postagem para salvar!');
+      return;
+    } 
+
+    let dados: string = '';
+
+    for ( let post of postagens ){
+      let tipo: string = 'P'
+
+      dados += `${post.id}#${post.texto}#${post.texto}#${post.curtidas}#${post.descrurtidas}#${post.data}#${post.perfil.id}\n`;
+      
+      if ( post instanceof PostagemAvancada) {
+        tipo = 'PA';
+        // Dividir as hashtags
+        
+        dados += `#${tipo}#${post.hashtags}#${post.visualizacoesRestantes}\n`;
+        
+      }
+      
+      dados += `${tipo}\n`;
+    }
+    
+    dados = dados.slice(0, -1);
+    escreverArquivo('../../Prova_01/DataBase/postagens.txt', dados);
+  }
+    
 }
 
 
@@ -271,3 +417,9 @@ for (let i = 0; i < conteudoDoArquivo.length; i++) {
   console.log(`Linha ${i + 1}: ${linha}`);
 }
  */
+
+/*
+1 - excluir perfil
+2 - excluir postagem
+3 - 
+*/

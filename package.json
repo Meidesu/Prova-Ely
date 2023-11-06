@@ -16,6 +16,7 @@
     "ulidx": "^2.2.1"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.2"
+    "@types/fs-extra": "^11.0.2",
+    "@types/node": "^20.8.10"
   }
 }

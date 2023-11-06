@@ -109,6 +109,23 @@ var RepositorioPostagens = /** @class */ (function () {
         }
         return false;
     };
+    RepositorioPostagens.prototype.obterPostagens = function () {
+        // Obter apenas os perfis com visualizações resdtantes
+        var posts = [];
+        for (var _i = 0, _a = this._postagem; _i < _a.length; _i++) {
+            var postagem = _a[_i];
+            if (postagem instanceof PostagemAvancada_1.PostagemAvancada) {
+                if (postagem.visualizacoesRestantes <= 0) {
+                    continue;
+                }
+            }
+            posts.push(postagem);
+        }
+        if (posts.length == 0) {
+            return null;
+        }
+        return posts;
+    };
     return RepositorioPostagens;
 }());
 exports.RepositorioPostagens = RepositorioPostagens;

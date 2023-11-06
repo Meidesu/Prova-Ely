@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.simOuNao = exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
+exports.ehEmail = exports.idValido = exports.simOuNao = exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
 var ulidx_1 = require("ulidx");
 var readline_sync_1 = require("readline-sync");
 function input(label) {
@@ -82,7 +82,12 @@ function ehEmail(texto) {
         partesDominio.length == 2 &&
         partesDominio.every(function (parte) { return parte.length > 1; }));
 }
+exports.ehEmail = ehEmail;
 function gerarId() {
     return (0, ulidx_1.ulid)();
 }
 exports.gerarId = gerarId;
+function idValido(id) {
+    return (0, ulidx_1.isValid)(id);
+}
+exports.idValido = idValido;

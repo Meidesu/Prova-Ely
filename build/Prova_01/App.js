@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var io_utils_1 = require("../utils/io_utils");
 var RedeSocial_1 = require("./RedeSocial");
+var io_utils_1 = require("../utils/io_utils");
+var fs_utils_1 = require("../utils/fs_utils");
+var PostagemAvancada_1 = require("./PostagemAvancada");
 var App = /** @class */ (function () {
     function App() {
         this._redeSocial = new RedeSocial_1.RedeSocial();
@@ -13,7 +15,11 @@ var App = /** @class */ (function () {
             'Consultar perfil',
             'Incluir Postagem',
             'Consultar postagem',
-            'Exibir postagens do perfil'
+            'Exibir postagens do perfil',
+            'Carregar dados',
+            'Salvar perfis',
+            'Carregar postagens',
+            'Salvar postagens'
         ];
         var opcao = (0, io_utils_1.selecao)(menu);
         while (opcao != 0) {
@@ -32,6 +38,18 @@ var App = /** @class */ (function () {
                     break;
                 case 5:
                     this.exibirPostagensPorPerfil();
+                    break;
+                case 6:
+                    this.carregarPerfis();
+                    break;
+                case 7:
+                    this.salvarPerfis();
+                    break;
+                case 8:
+                    this.carregarPostagens();
+                    break;
+                case 9:
+                    this.salvarPostagens();
                     break;
                 default:
                     break;
@@ -178,6 +196,97 @@ var App = /** @class */ (function () {
             });
         }
     };
+    App.prototype.carregarPerfis = function () {
+        var linhasPerfil = (0, fs_utils_1.lerArquivo)('../../Prova_01/DataBase/perfis.txt');
+        var ocorrencias = 0;
+        for (var _i = 0, linhasPerfil_1 = linhasPerfil; _i < linhasPerfil_1.length; _i++) {
+            var linha = linhasPerfil_1[_i];
+            if (linha == '') {
+                continue;
+            }
+            var dados = linha.split("#");
+            var id = dados[0];
+            var nome = dados[1];
+            var email = dados[2];
+            if (!(0, io_utils_1.idValido)(id) || !(0, io_utils_1.ehEmail)(email)) {
+                ocorrencias++;
+                continue;
+            }
+            this._redeSocial.criarPerfil(id, nome, email);
+        }
+        (0, io_utils_1.print)('Dados carregados com sucesso!');
+        (0, io_utils_1.print)("Total de ocorrencias: ".concat(ocorrencias));
+    };
+    App.prototype.salvarPerfis = function () {
+        var perfis = this._redeSocial.obterPerfis();
+        if (perfis.length == 0) {
+            (0, io_utils_1.print)('\nNenhum perfil para salvar!');
+            return;
+        }
+        var dados = '';
+        for (var _i = 0, perfis_2 = perfis; _i < perfis_2.length; _i++) {
+            var perfil = perfis_2[_i];
+            dados += "".concat(perfil.id, "#").concat(perfil.nome, "#").concat(perfil.email, "\n");
+        }
+        dados = dados.slice(0, -1);
+        (0, fs_utils_1.escreverArquivo)('../../Prova_01/DataBase/perfis.txt', dados);
+    };
+    App.prototype.carregarPostagens = function () {
+        var linhasPostagem = (0, fs_utils_1.lerArquivo)('../../Prova_01/DataBase/postagens.txt');
+        var ocorrencias = 0;
+        for (var _i = 0, linhasPostagem_1 = linhasPostagem; _i < linhasPostagem_1.length; _i++) {
+            var linha = linhasPostagem_1[_i];
+            if (linha == '') {
+                continue;
+            }
+            var dados = linha.split("#");
+            var id = dados[0];
+            var texto_1 = dados[1];
+            var curtidas = Number(dados[2]);
+            var descurtidas = Number(dados[3]);
+            var data = dados[4];
+            var idPerfil = dados[5];
+            var tipo = dados[6];
+            var hashtags = void 0;
+            var visuRestantes = void 0;
+            if (tipo == 'PA') {
+                hashtags = dados[7].split('-');
+                visuRestantes = Number(dados[8]);
+            }
+            if (!(0, io_utils_1.idValido)(id) || !(0, io_utils_1.idValido)(idPerfil)) {
+                ocorrencias++;
+                continue;
+            }
+            var perfil = this._redeSocial.consultarPerfil(idPerfil);
+            if (!perfil)
+                continue;
+            this._redeSocial.criarPostagem(id, texto_1, data, perfil, curtidas, descurtidas, hashtags, visuRestantes);
+        }
+        (0, io_utils_1.print)('Postagens carregados com sucesso!');
+        (0, io_utils_1.print)("Total de ocorrencias: ".concat(ocorrencias));
+    };
+    App.prototype.salvarPostagens = function () {
+        // 3456YGDE3456Y#texto#curtidas#descurtidas#data#idPerfil#P/PA#hash-hash2-hash3#visurestantes
+        var postagens = this._redeSocial.obterPostagens();
+        if (!postagens) {
+            (0, io_utils_1.print)('\nNenhuma postagem para salvar!');
+            return;
+        }
+        var dados = '';
+        for (var _i = 0, postagens_1 = postagens; _i < postagens_1.length; _i++) {
+            var post = postagens_1[_i];
+            var tipo = 'P';
+            dados += "".concat(post.id, "#").concat(post.texto, "#").concat(post.texto, "#").concat(post.curtidas, "#").concat(post.descrurtidas, "#").concat(post.data, "#").concat(post.perfil.id, "\n");
+            if (post instanceof PostagemAvancada_1.PostagemAvancada) {
+                tipo = 'PA';
+                // Dividir as hashtags
+                dados += "#".concat(tipo, "#").concat(post.hashtags, "#").concat(post.visualizacoesRestantes, "\n");
+            }
+            dados += "".concat(tipo, "\n");
+        }
+        dados = dados.slice(0, -1);
+        (0, fs_utils_1.escreverArquivo)('../../Prova_01/DataBase/postagens.txt', dados);
+    };
     return App;
 }());
 var app = new App();
@@ -192,4 +301,9 @@ for (let i = 0; i < conteudoDoArquivo.length; i++) {
   const linha = conteudoDoArquivo[i];
   console.log(`Linha ${i + 1}: ${linha}`);
 }
- */ 
+ */
+/*
+1 - excluir perfil
+2 - excluir postagem
+3 -
+*/

@@ -100,4 +100,8 @@ function gerarId() {
   return ulid();
 }
 
-export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId, simOuNao}
+function idValido(id:string): boolean {
+  return isValid(id);
+} 
+
+export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail}

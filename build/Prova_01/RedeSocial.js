@@ -110,6 +110,9 @@ var RedeSocial = /** @class */ (function () {
     RedeSocial.prototype.obterPerfis = function () {
         return this._repositorioPerfis.perfis;
     };
+    RedeSocial.prototype.obterPostagens = function () {
+        return this._repositorioPostagens.obterPostagens();
+    };
     return RedeSocial;
 }());
 exports.RedeSocial = RedeSocial;
