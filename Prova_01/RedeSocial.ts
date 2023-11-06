@@ -144,4 +144,23 @@ export class RedeSocial {
     obterPostagens(): Postagem[] | null{
         return this._repositorioPostagens.obterPostagens();
     }  
+
+    obterPostagensPopular(): Postagem[] | null {
+        let postagens: Postagem[]|null = this.obterPostagens();
+        let postagensPop: Postagem[] = [];
+
+        if ( !postagens ){
+            return null;
+        }
+
+        for ( let post of postagens ){
+            if ( post.ehPopular() ) {
+                postagensPop.push(post)
+            }
+        }
+
+        if ( !postagensPop ) return null;
+
+        return postagensPop;
+    }
 }   

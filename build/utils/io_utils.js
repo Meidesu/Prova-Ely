@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ehEmail = exports.idValido = exports.simOuNao = exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
+exports.exibirTitulo = exports.ehEmail = exports.idValido = exports.simOuNao = exports.inputId = exports.gerarId = exports.inputEmail = exports.selecao = exports.continuar = exports.limparConsole = exports.print = exports.inputInt = exports.input = void 0;
 var ulidx_1 = require("ulidx");
 var readline_sync_1 = require("readline-sync");
 function input(label) {
@@ -55,7 +55,7 @@ function print() {
 exports.print = print;
 // Usa a biblioteca readline-sync para pausar a aplicação até que o usuario aperte Enter
 function continuar() {
-    (0, readline_sync_1.keyIn)("[Espaco para continuar...]");
+    (0, readline_sync_1.keyIn)("\n[Espaco para continuar...]");
     limparConsole();
 }
 exports.continuar = continuar;
@@ -91,3 +91,8 @@ function idValido(id) {
     return (0, ulidx_1.isValid)(id);
 }
 exports.idValido = idValido;
+function exibirTitulo() {
+    var out = "\n  ___               ___  __   __   __       \n   |  |__| |  |\\/| |__  |__) /  \\ /  \\ |__/ \n   |  |  | |  |  | |___ |__) \\__/ \\__/ |  \\";
+    print(out);
+}
+exports.exibirTitulo = exibirTitulo;

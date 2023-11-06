@@ -1,16 +1,22 @@
 import { Postagem } from "./Postagem";
 import { Perfil } from "./Perfil";
 import { RedeSocial } from "./RedeSocial";
-import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail } from "../utils/io_utils";
+import { continuar, input, inputInt, limparConsole, print, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail, exibirTitulo } from "../utils/io_utils";
 import { escreverArquivo, lerArquivo } from "../utils/fs_utils";
 import { PostagemAvancada } from "./PostagemAvancada";
+
 
 class App {
   private _redeSocial: RedeSocial = new RedeSocial();
   
   
   public rodarAplicacao(): void {
+    this.carregarPerfis();
+    this.carregarPostagens();
+    
     limparConsole();
+
+    exibirTitulo();
 
     let menu: string[] = [
       'Incluir perfil', 
@@ -18,10 +24,8 @@ class App {
       'Incluir Postagem',
       'Consultar postagem',
       'Exibir postagens do perfil',
-      'Carregar dados',
-      'Salvar perfis',
-      'Carregar postagens',
-      'Salvar postagens'
+      'Curtir/descurtir postagem',
+      'Exibir postagens populares'
     ];
     
     let opcao: number = selecao(menu);
@@ -30,7 +34,7 @@ class App {
       switch (opcao) {
         case 1:
           this.incluirPerfil();
-
+          
           break;
         case 2:
           this.consultarPerfil();
@@ -38,41 +42,39 @@ class App {
           break;
         case 3:
           this.incluirPostagem();
-
+          
           break;
         case 4:
           this.consultarPostagem();
-
+          
           break;
         case 5:
           this.exibirPostagensPorPerfil();
-
+          
           break;
         case 6:
-          this.carregarPerfis();
+          this.curtirDescurtirPostagem();
 
           break;
         case 7:
-          this.salvarPerfis();
+          this.exibirPostagensPopulares();
 
           break;
-        case 8:
-          this.carregarPostagens();
-
-          break;
-        case 9:
-          this.salvarPostagens();
-
-          break;
-      
         default:
           break;
       }
 
+      this.salvarPerfis();
+      this.salvarPostagens();
       continuar()
+      exibirTitulo();
       opcao = selecao(menu)
       // this.exibirMenu()
     }
+
+    print('Fim do programa!');
+    this.salvarPerfis();
+    this.salvarPostagens();
   }
 
   public incluirPerfil(): void {
@@ -181,41 +183,38 @@ class App {
     let hashtags: string|undefined;
     let perfil: Perfil|undefined;
 
-    do {
-      switch (opcao) {
-      
-        case 1:
-          id = inputId('Informe o ID: ');
-          
-          break;
-  
-        case 2:
-          texto = input('Informe o texto: ');
-  
-          break;
-  
-        case 3:
-          hashtags = input('Informe a hashtag: #');
-  
-          break;
-        case 4:
-          let perfilSelecionado: Perfil|null = this.selecionarPerfil();
-  
-          if ( !perfilSelecionado ){
-            print('Nao e possivel pesquisar por perfil, pois nao ha perfis cadastrados');
-            return;
-          }
+    switch (opcao) {
+    
+      case 1:
+        id = inputId('Informe o ID: ');
+        
+        break;
 
-          perfil = perfilSelecionado;
+      case 2:
+        texto = input('Informe o texto: ');
 
-          break;
-          
-        default:
-          break;
-      }
-      
-      opcao = selecao(menu);
-    } while (opcao != 0);
+        break;
+
+      case 3:
+        hashtags = input('Informe a hashtag: #');
+
+        break;
+      case 4:
+        let perfilSelecionado: Perfil|null = this.selecionarPerfil();
+
+        if ( !perfilSelecionado ){
+          print('Nao e possivel pesquisar por perfil, pois nao ha perfis cadastrados');
+          return;
+        }
+
+        perfil = perfilSelecionado;
+
+        break;
+        
+      default:
+        break;
+
+    }  
     
     let postagem: Postagem[]|null = this._redeSocial.consultarPostagens(id, texto, hashtags, perfil)
 
@@ -335,6 +334,8 @@ class App {
       }
 
       let dados: string[] = linha.split("#");
+      
+//01HEJ8RK0P54BCKAD3BPQ1XDG7#exemplo sem tags#exemplo sem tags#0#0#06/11/2023 09:12:21#01HEH3A28CNFF0SKG9PYB4ZERNP
 
       let id: string = dados[0];
       let texto: string = dados[1]; 
@@ -347,6 +348,7 @@ class App {
       let visuRestantes: number|undefined;
 
       if ( tipo == 'PA' ){
+        
         hashtags = dados[7].split('-');
         visuRestantes = Number(dados[8]);
       }
@@ -358,12 +360,14 @@ class App {
 
       let perfil: Perfil|null = this._redeSocial.consultarPerfil(idPerfil);
 
-      if ( !perfil ) continue;
+      if ( !perfil ) {
+        continue;
+      }
 
       this._redeSocial.criarPostagem(id, texto, data, perfil, curtidas, descurtidas, hashtags, visuRestantes);
     }
 
-    print('Postagens carregados com sucesso!');
+    print('\nPostagens carregados com sucesso!');
     print(`Total de ocorrencias: ${ocorrencias}`);
     
   }
@@ -381,25 +385,89 @@ class App {
 
     for ( let post of postagens ){
       let tipo: string = 'P'
-
-      dados += `${post.id}#${post.texto}#${post.texto}#${post.curtidas}#${post.descrurtidas}#${post.data}#${post.perfil.id}\n`;
+      
+      dados += `${post.id}#${post.texto}#${post.curtidas}#${post.descrurtidas}#${post.data}#${post.perfil.id}`;
       
       if ( post instanceof PostagemAvancada) {
         tipo = 'PA';
+        let hastags: string = '';
         // Dividir as hashtags
+
+        for ( let tag of post.hashtags ){
+          hastags += `${tag}-`;
+        }
+
+        hastags = hastags.slice(0, -1);
         
-        dados += `#${tipo}#${post.hashtags}#${post.visualizacoesRestantes}\n`;
+        dados += `#${tipo}#${hastags}#${post.visualizacoesRestantes}\n`;
         
+      } else {
+        dados += `#${tipo}\n`;
+
       }
-      
-      dados += `${tipo}\n`;
     }
     
     dados = dados.slice(0, -1);
     escreverArquivo('../../Prova_01/DataBase/postagens.txt', dados);
   }
+
+  public selecionarPostagem(): Postagem | null {
+    let postagens: Postagem[]|null = this._redeSocial.obterPostagens();
+
+    if ( !postagens ){
+      return null;
+    } 
+
+    let opcoes: string[] = []
+
+    for ( let post of postagens ) {
+      opcoes.push(post.toString());
+    }
+
+    print('Escolha o perfil associado: ');
+    let indice: number = selecao(opcoes);
+
+    let post: Postagem = postagens[indice-1];
+
+    return post;
+
+  }
+  
+  public curtirDescurtirPostagem(): void {
+    let postagem: Postagem|null = this.selecionarPostagem();
+
+    if ( !postagem ){
+      print('\nNenhuma postagem disponivel!');
+      return;
+    }
+
+    let opcao: number = selecao(['Curtir', 'Descurtir'])
+
+    switch (opcao) {
+      case 1:
+        this._redeSocial.curtir(postagem.id);
+        break;
+      case 2:
+        this._redeSocial.descurtir(postagem.id);
+        break;
+    }
+
+    print(postagem.toString());
+
+  }
+
+  public exibirPostagensPopulares(): void {
+    let postagensPop: Postagem[]|null = this._redeSocial.obterPostagensPopular();
+
+    if ( !postagensPop ) return;
+
+    postagensPop.forEach(post => {
+      print(post.toString());
+    });
     
-}
+  }
+
+} // final da classe 
 
 
 let app: App = new App();

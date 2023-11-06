@@ -62,7 +62,7 @@ function print(...parameters: any): void{
 
 // Usa a biblioteca readline-sync para pausar a aplicação até que o usuario aperte Enter
 function continuar() {
-  keyIn("[Espaco para continuar...]")
+  keyIn("\n[Espaco para continuar...]")
 
   limparConsole()
 }
@@ -104,4 +104,13 @@ function idValido(id:string): boolean {
   return isValid(id);
 } 
 
-export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail}
+function exibirTitulo() {
+  let out: string = `
+  ___               ___  __   __   __       
+   |  |__| |  |\\/| |__  |__) /  \\ /  \\ |__/ 
+   |  |  | |  |  | |___ |__) \\__/ \\__/ |  \\`
+
+  print(out)
+}
+
+export{input, inputInt, print, limparConsole, continuar, selecao, inputEmail, gerarId, inputId, simOuNao, idValido, ehEmail , exibirTitulo}

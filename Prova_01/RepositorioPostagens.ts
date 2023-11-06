@@ -24,26 +24,27 @@ export class RepositorioPostagens {
     for ( let post of this._postagem){
       if ( hashtag){
           if ( post instanceof PostagemAvancada){
-            if ( !( <PostagemAvancada> post).existeHashtag(hashtag)){
+            if ( ( <PostagemAvancada> post).existeHashtag(hashtag)){
+              posts.push(post);
               continue;
             }
           }
       }
 
       if ( texto ){
-        if ( !post.texto.includes(texto)){
+        console.log("1ele ta puxando por texto dd");
+        if ( post.texto.includes(texto)){
+          posts.push(post);
           continue;
         }
       }
       
       if ( perfil ){
-        if ( post.perfil != perfil){
+        if ( post.perfil == perfil){
+          posts.push(post);
           continue;
         }
       }
-
-      posts.push(post);
-
     }
 
     if (posts.length == 0){
